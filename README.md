@@ -8,7 +8,7 @@ Telegram-бот для одного публичного канала. Он ад
 
 ## Hugging Face MCP
 
-К проекту подключён другой MCP-сервер: публичный Space тональности. Адрес записан в `.cursor/mcp.json`, а бот ходит туда сам из `hf_mcp.py` при каждом разборе комментариев.
+К проекту подключён MCP-сервер Hugging Face: публичный Space тональности. Адрес записан в `.cursor/mcp.json`, а бот ходит туда сам из `hf_mcp.py` при каждом разборе комментариев.
 
 Сервер: [Hariharasudhan07/qwen3-0.6b-sentiment-classification](https://huggingface.co/spaces/Hariharasudhan07/qwen3-0.6b-sentiment-classification). Это Qwen3-0.6B с классами positive, neutral и negative. Эндпоинт MCP: `https://hariharasudhan07-qwen3-0-6b-sentiment-classification.hf.space/gradio_api/mcp`. Токен для этого вызова не нужен.
 
