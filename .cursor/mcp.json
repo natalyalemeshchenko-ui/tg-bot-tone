@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "hf-sentiment": {
+      "url": "https://hariharasudhan07-qwen3-0-6b-sentiment-classification.hf.space/gradio_api/mcp"
+    }
+  }
+}

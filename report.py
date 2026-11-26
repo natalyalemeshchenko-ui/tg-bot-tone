@@ -2,11 +2,11 @@ import hashlib
 
 from chart import render_chart
 from gigachat import ask
-from sentiment import classify
+from sentiment import classify, last_source
 
 COMMENT_LIMIT = 300
 
-SUMMARY_VERSION = "2"
+SUMMARY_VERSION = "3"
 SYSTEM_PROMPT = (
     "Ты редактор обзора комментариев под постом. Пиши по-русски, коротко, без markdown. "
     "Опирайся только на приведённые комментарии и не добавляй людей, которых в списке нет. "
@@ -45,6 +45,7 @@ def build_stats(comments):
         "counts": counts,
         "total": total,
         "trimmed": len(comments) > COMMENT_LIMIT,
+        "source": last_source(),
         "png": render_chart(counts, total),
     }
 

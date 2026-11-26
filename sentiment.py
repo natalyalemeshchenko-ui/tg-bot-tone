@@ -11,10 +11,28 @@ _id2label = {}
 _lock = threading.Lock()
 
 
+_last_source = "local"
+
+
+def last_source():
+    return _last_source
+
+
 def classify(texts):
-    """Возвращает метку и уверенность для каждого текста, в том же порядке."""
+    """Сначала спрашивает MCP Hugging Face, при сбое считает локальной моделью."""
+    global _last_source
     if not texts:
         return []
+    try:
+        from hf_mcp import classify_with_mcp
+
+        scored = classify_with_mcp(texts)
+        _last_source = "mcp"
+        print(f"Тональность через Hugging Face MCP, комментариев: {len(scored)}")
+        return scored
+    except Exception as error:
+        _last_source = "local"
+        print(f"MCP недоступен, считаю локальной моделью: {type(error).__name__}: {error}")
     pipe, id2label = _model()
     raw = pipe(list(texts), truncation=True, max_length=512, top_k=1)
     scored = []

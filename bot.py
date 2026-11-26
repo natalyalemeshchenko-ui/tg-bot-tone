@@ -130,6 +130,10 @@ def _analyze(bot, store, gigachat_key, message):
     caption = f"Разобрано комментариев: {stats['total']}"
     if stats["trimmed"]:
         caption += f" (последние {stats['total']})"
+    if stats.get("source") == "mcp":
+        caption += "\nТональность: Hugging Face MCP"
+    else:
+        caption += "\nТональность: локальная модель, MCP не ответил"
     image = BytesIO(stats["png"])
     image.name = "tone.png"
     bot.send_photo(message.chat.id, image, caption=caption, reply_to_message_id=message.message_id)

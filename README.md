@@ -4,23 +4,19 @@ Telegram-бот для одного публичного канала. Он ад
 <img width="994" height="983" alt="2026-11-26_12-52-38" src="https://github.com/user-attachments/assets/0574e2e7-f935-4b62-b39f-97fd8ab94e7e" />
 
 
-Тональность в боте считает локальная модель `blanchefort/rubert-base-cased-sentiment`. Резюме пишет GigaChat по тексту комментариев: что хвалят, что ругают и о чём говорят.
+Тональность бот считает через MCP-сервер Hugging Face. Если сервер не отвечает, используется локальная модель `blanchefort/rubert-base-cased-sentiment`. Резюме пишет GigaChat по тексту комментариев: что хвалят, что ругают и о чём говорят.
 
 ## Hugging Face MCP
 
-Тональность тестировали через MCP-сервер Hugging Face, на публичном Space. В учебном проекте для бота выбрана бесплатная локальная модель: так разбор не упирается в очередь и дневную квоту. При необходимости можно снова вызывать Space либо через тот же MCP подобрать другую модель на Hub и скачать её локально под конкретную задачу.
+К проекту подключён другой MCP-сервер: публичный Space тональности. Адрес записан в `.cursor/mcp.json`, а бот ходит туда сам из `hf_mcp.py` при каждом разборе комментариев.
 
-Что сделали на Space:
+Сервер: [Hariharasudhan07/qwen3-0.6b-sentiment-classification](https://huggingface.co/spaces/Hariharasudhan07/qwen3-0.6b-sentiment-classification). Это Qwen3-0.6B с классами positive, neutral и negative. Эндпоинт MCP: `https://hariharasudhan07-qwen3-0-6b-sentiment-classification.hf.space/gradio_api/mcp`. Токен для этого вызова не нужен.
 
-1. Через `hf_fs` нашли публичные MCP Spaces для анализа тональности.
-2. Через `dynamic_space` посмотрели параметры и вызвали классификатор. Английская модель [hugging-apps/sentimental-0-2m-demo](https://huggingface.co/spaces/hugging-apps/sentimental-0-2m-demo) для русских отзывов не подошла: она обучена на IMDB, SST и твитах.
-3. Четыре отзыва из `test.md` прогнали через [Hariharasudhan07/qwen3-0.6b-sentiment-classification](https://huggingface.co/spaces/Hariharasudhan07/qwen3-0.6b-sentiment-classification). Это Qwen3-0.6B с головой на три класса: positive, neutral, negative.
+Если Space не отвечает, бот считает тональность локальной моделью `blanchefort/rubert-base-cased-sentiment` и пишет об этом в подписи к диаграмме. Когда отвечает MCP, в подписи стоит «Тональность: Hugging Face MCP».
 
-Результат по `test.md`: 3 позитивных отзыва с уверенностью около 99,7% и 1 негативный с уверенностью 86,1%. Нейтральных не было. У негативного отзыва оставалось около 12% positive: в тексте есть и попытка сервиса помочь.
+Вызов Space бесплатный в пределах дневной квоты ZeroGPU. У бесплатного аккаунта это около 5 минут GPU в сутки. Отдельный токен Hugging Face для этого Space не требуется.
 
-Вызов Space бесплатный в пределах дневной квоты ZeroGPU. У бесплатного аккаунта это 5 минут GPU в сутки, у PRO — 40 минут. Деньги списываются только если платный аккаунт уже выбрал квоту и включены предоплаченные кредиты: $1 за 10 минут сверх лимита.
-
-В коде бота вызовов MCP нет. Комментарии классифицирует локальная `blanchefort/rubert-base-cased-sentiment`: она русскоязычная и не тратит квоту ZeroGPU. С Hugging Face бот только скачивает её веса при первом запуске.
+До этого те же отзывы из `test.md` проверялись через общий MCP Hugging Face (`hf_fs` и `dynamic_space`). Английская модель [hugging-apps/sentimental-0-2m-demo](https://huggingface.co/spaces/hugging-apps/sentimental-0-2m-demo) для русских текстов не подошла. Четыре отзыва на Qwen-Space дали 3 позитивных с уверенностью около 99,7% и 1 негативный с уверенностью 86,1%.
 
 Старые посты и комментарии бот не выгружает. Непрочитанные обновления Telegram хранит около суток, поэтому бота лучше не выключать надолго.
 
@@ -43,7 +39,7 @@ pip install -r requirements.txt
 python bot.py
 ```
 
-При первом разборе комментариев модель скачается с Hugging Face.
+Локальная модель скачивается с Hugging Face только если MCP-сервер не ответил.
 
 В личный чат бота любой пользователь может прислать ссылку на пост, например `https://t.me/channel/123`. В ответ придёт диаграмма и резюме. Если комментариев ещё нет, бот так и напишет.
 
