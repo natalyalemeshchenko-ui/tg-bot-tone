@@ -1,0 +1,8 @@
+.env
+data/
+__pycache__/
+*.py[cod]
+Russian_Trusted_CA/
+*.pem
+.venv/
+venv/

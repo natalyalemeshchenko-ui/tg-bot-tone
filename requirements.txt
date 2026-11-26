@@ -1,0 +1,6 @@
+pyTelegramBotAPI>=4.16,<5
+requests>=2.31
+certifi>=2024.2.2
+matplotlib>=3.8
+transformers>=4.44
+torch>=2.2

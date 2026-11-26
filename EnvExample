@@ -1,0 +1,5 @@
+# Токен бота от @BotFather
+TELEGRAM_BOT_TONE_TOKEN=
+
+# Ключ авторизации GigaChat. Можно с префиксом Basic или без него.
+GIGACHAT_AUTH_KEY=
